@@ -1,0 +1,47 @@
+﻿
+drop table Doctor cascade;
+create table Doctor 
+(
+	Did int primary key,
+	Dname varchar(25),
+	Specialisation varchar(25) default 'general',
+	Aadhar_no varchar(12) unique,
+	Consultation_fee numeric(5,2) constraint c1 check(consultation_fee>50) 
+);
+
+drop table Patient cascade;
+create table Patient
+(
+	Pid int primary key,
+	Pname varchar(25),
+	Date_of_birth date,
+	Address varchar(20) 
+);
+
+drop table Treat1 cascade;
+create table Treat1
+(
+	Did int references Doctor(Did) on delete cascade,
+	Pid int references patient(Pid) on delete set null,
+	Diagnosis varchar(30) not null,
+	Treat_id int primary key,
+	Treat_date date
+);
+
+alter table Doctor add special_fee numeric(5,2);
+alter table Doctor add constraint c2 check(special_fee > consultation_fee);
+alter table Doctor drop constraint c1;
+alter table Patient add column aadhar_number numeric(25);
+alter table Patient alter column date_of_birth set not null;
+alter table Treat1 add constraint con1 unique(Treat_id,Treat_date);
+insert into Doctor values(1,'vaisakh',default,1234567890,100);
+insert into Doctor values(2,'gayathry','ortho',1234567891,150);
+insert into Patient values(1,'Rohan','1999/6/1','Thrissur');
+insert into Patient values(2,'Shriamrut','1999/9/14','Thrissur');
+insert into Treat1 values(1,1,'cold',123,'1999/7/19');
+insert into Treat1 values(2,2,'fever',143,'1999/7/19');
+delete from Doctor where did=1;
+delete from patient where pid=2;
+alter table Doctor add city varchar(10);
+select * from Doctor;
+select * from Treat1;
